@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
@@ -31,6 +32,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.sun.org.apache.bcel.internal.generic.IUSHR;
 
 import sun.net.www.content.image.jpeg;
 import sun.util.logging.resources.logging_zh_CN;
@@ -81,6 +84,7 @@ public class MainPage extends JFrame implements ActionListener
 	if(loginedUsername==null)//warn user for clicking the button in main page first he/she must login.
 	{
 	  JOptionPane.showMessageDialog(null, "Error:You must login to the system first!"); 
+	  new LoginPage().setVisible(true);
 	  return;
 	}
 	if(e.getSource()==btnDesign)
@@ -90,6 +94,7 @@ public class MainPage extends JFrame implements ActionListener
 	if(e.getSource()==btnRaisePoint)
 	{
 	 readUsersFromFile();//tempUsers is filled;
+	 deleteContextOfFile();//it will be filled again with updated and remained points acc.to the logined user.
 	 Date date1,date2;
 	 long diff,diffDays;
 	 String s[];
@@ -116,65 +121,38 @@ public class MainPage extends JFrame implements ActionListener
 			newUser.setLastTrigger(lastTriggeredDate);
 			loginedUsers.add(newUser);
 		  }
-		  else
-		  {JOptionPane.showMessageDialog(null, "Error:Point increment can be done once in a day!");
-		   return;
+		  else //eski bilgileri ile dosyaya ekleyerek degisiklik yapmamis oluyorsun bu kullanici icin.
+		  {
+		   newUser= new User(s[0],s[1],s[2],s[3],s[4]);
+		   newUser.setPoint(Integer.parseInt(s[5]));
+		   newUser.setTimeStamp(s[6]);
+		   newUser.setLastTrigger(s[7]);
+		   loginedUsers.add(newUser);		   
+		   JOptionPane.showMessageDialog(null, "Error:Point increment can be done once in a day!");
+		   continue;
 		  }
 		 }
 		 catch (ParseException e2)
 		 {
 		  e2.printStackTrace();
 		 }
-		} 			
+		}
+	    else //baglanan kullanici olmadigi icin update edilmeden,eski haliyle yuklenecek.
+	    {
+		   newUser= new User(s[0],s[1],s[2],s[3],s[4]);
+		   newUser.setPoint(Integer.parseInt(s[5]));
+		   newUser.setTimeStamp(s[6]);
+		   newUser.setLastTrigger(s[7]);
+		   loginedUsers.add(newUser);
+	    }
 	  }	
 	 WriteLoginedUsersToFile();
 	}
 	 
    }
  
- public static String findTheWinner()//winner for prize info(biggest point)which will be used by admin.
- {
-	//to get accurate winner information,the file must be controlled frequently!
-	readUsersFromFile();//tempUsers arraylist is filled.  
-    Date date1,date2;  
-	String s[],t[];
-    String biggest="";
-    for (int i = 0;i <tempUsers.size();i++)
-   {
-      if(i!=tempUsers.size()-1)//to prevent null condition(last index+1=null which is used for t[])
-    {
-      s=tempUsers.get(i).split("-");
-      t=tempUsers.get(i+1).split("-");
-	  if(Integer.parseInt(s[5])>Integer.parseInt(t[5]))//if previous one's point is bigger than the next one.
-		biggest=tempUsers.get(i);
-	  else if(Integer.parseInt(s[5])<Integer.parseInt(t[5]))
-		biggest=tempUsers.get(i+1);
-	  else //if points are equal,compare according to the registered date;
-	  {
-		try
-		{
-		  date1=new SimpleDateFormat("dd/MM/yyyy/HH.mm.s").parse(s[6]);
-		  date2=new SimpleDateFormat("dd/MM/yyyy/HH.mm.s").parse(t[6]);
-		  if(date1.compareTo(date2)>0)//date1 occurs after date2(date2 is older user for us)
-			biggest=tempUsers.get(i+1);
-		  else if(date1.compareTo(date2)<0)//date1 occurs before date2(date1 is older user for us)
-			biggest=tempUsers.get(i);
-		  else//if they're equal,but it has less possibility since we compare until 'second(s)' for date comparison.
-		     biggest=tempUsers.get(i);	
-		 } 
-		catch (ParseException e)
-		{
-			e.printStackTrace();
-		}			 	
-	  }
-	}
-      else//if index(i)==tempUsers.size-1(last index);
-    	continue;
-   }
-    return biggest;	 
- }
 
- 
+
  public static void WriteLoginedUsersToFile()
  {
   /*write the new increased point and new 'point increment' button trigger time to the
@@ -260,13 +238,81 @@ public class MainPage extends JFrame implements ActionListener
     }
   }
   
+  public static void deleteContextOfFile()//to prevent copied items and to initialize the points again.
+  {
+	  try 
+	  {
+		FileWriter fw = new FileWriter("pointCalculationForLoginedUsers.txt",false);
+		PrintWriter pwOb = new PrintWriter(fw,false);
+		pwOb.flush();
+		pwOb.close();
+		System.out.println("file content is deleted.");
+	  } 
+	  catch (IOException e1) 
+	  {
+		e1.printStackTrace();
+	  }	
+  }
+  
+  
+    public static String findTheWinner()//winner for prize info(biggest point)which will be used by admin.
+   {
+    	readUsersFromFile();//tempUsers is filled.
+    	String t[];
+    	String s[]=tempUsers.get(0).split("-");    	
+        int max = Integer.parseInt(s[5]);
+        String maxPointOwner="";
+        // store the length of the ArrayList in variable n
+        int n = tempUsers.size(); 
+        // loop to find maximum from ArrayList
+        for (int i = 1; i < n; i++) 
+        {
+          t=tempUsers.get(i).split("-");
+            if (Integer.parseInt(t[5])>max) 
+           {
+              maxPointOwner=tempUsers.get(i);
+              max =Integer.parseInt(t[5]);
+           }
+        }
+        System.out.println("Maximum is : " + max);
+        return maxPointOwner;
+   }
+  
+  public static void EqualizePoints()
+  {
+ 	//to be more fair,the point and last trigger time will be equalized by admin after the prize is given via
+	//deleting the context first and then get again the registered users' informations.
+	  
+ 	/*readUsersFromFile();//tempUsers is filled.
+ 	deleteContextOfFile();
+ 	User newUser;
+ 	String s[];
+ 	lastTriggeredDate = new SimpleDateFormat("dd/MM/yyyy/HH.mm.s").format(Calendar.getInstance().getTime());
+ 	for (String user : tempUsers)
+ 	{
+ 	 s=user.split("-");
+ 	 newUser=new User(s[0],s[1],s[2],s[3],s[4]);
+ 	 newUser.setPoint(0);
+ 	 newUser.setLastTrigger(lastTriggeredDate);//current date and time;
+ 	 loginedUsers.add(newUser);
+ 	}
+ 	WriteLoginedUsersToFile();*/
+	  
+	deleteContextOfFile();
+	WriteUsersToFile();
+  }
+  
   public static void main(String[]args)
   {  
 	 //WriteUsersToFile();//executed at first to create the file and also it will be uncommented when the 
 	 //registered users information will be taken from the Register class.
+	  
 	 getUsersFromFile();//at first comment this and run WriteUsersToFile(),then uncomment it.
 	 //and comment WriteUsersToFile() on main() 
 	 //to create the file first and then(for the next run calls) read it!
+	 
+	 //EqualizePoints();//used to initialize the points and equalize last trigger 
+	 //time to be more fair about calculation for each prize period.
 	 
    //System.out.println("The winner of the prize is: "+"{{{"+findTheWinner()+"}}}");//it will be used when the admin wants to learn the winner.
      new MainPage().setVisible(true);
