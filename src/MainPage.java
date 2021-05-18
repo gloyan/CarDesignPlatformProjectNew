@@ -376,12 +376,12 @@ public class MainPage extends JFrame implements ActionListener
   
   public static void main(String[]args)
   {  
-	 WriteUsersToFile();
+	 //WriteUsersToFile();
 	  /*executed at first to create the file and also it will be uncommented when the 
 	   registered users information will be taken from the Register class.*/
-	  /*==> if it can be triggered in writeUsersToFile() at the Register class/page,there will be no
-	   * need to use here anymore to get new registered users,it becomes optional for using here 
-	   * to get the new registered users and add them to the 'pointcalculation' file too!!!!???????
+      /*Coming registered user informations will be different than the already stored user informations which
+       * is stored at the 'pointcalculation' file.
+       */
 	 	  
 	 getUsersFromFile();
 	 /*at first comment this and run WriteUsersToFile(),then uncomment it.
