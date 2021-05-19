@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,32 +54,28 @@ public class Register extends JFrame implements ActionListener,FocusListener
 	  setDefaultCloseOperation(HIDE_ON_CLOSE);
 	  setSize(800,500);
 	  setLayout(new GridLayout(8,3));
+	  btnRegister.setFont(new Font("Calibri",Font.PLAIN,25));
 	  btnRegister.setBackground(Color.blue);
 	  btnRegister.setForeground(Color.white);	
-	  add(new JLabel("Name (Use Just Letters):"));
+	  add(new JLabel("Name (Use Just Letters):")).setFont(new Font("Calibri",Font.BOLD,15));
 	  add(txtName);
 	  add(lblName);
-	  add(new JLabel("Surname (Use Just Letters):"));
+	  add(new JLabel("Surname (Use Just Letters):")).setFont(new Font("Calibri",Font.BOLD,15));
 	  add(txtSurname);
 	  add(lblSurname);
-      add(new JLabel("Username (Use Just Words,Not Symbols):"));//. and _ acceptable.
+      add(new JLabel("Username (Use Just Words,Not Symbols):")).setFont(new Font("Calibri",Font.BOLD,15));//. and _ acceptable.
 	  add(txtUsername);
 	  add(lblUsername);
-	  add(new JLabel("Password (Use Just Words,Not Symbols):"));//. and _ acceptable.
+	  add(new JLabel("Password (Use Just Words,Not Symbols):")).setFont(new Font("Calibri",Font.BOLD,15));//. and _ acceptable.
 	  add(txtPassword);
 	  add(lblPassword);
-	  add(new JLabel("Email (name.surname_1990@gmail.com):"));
+	  add(new JLabel("Email (name.surname_1990@gmail.com):")).setFont(new Font("Calibri",Font.BOLD,15));
 	  add(txtEmail);
 	  add(lblEmail);
 	  add(new JLabel(""));
 	  add(btnRegister);	
-	  //user=new User(txtName.getText(),txtSurname.getText(),txtUsername.getText(),
-			 //txtPassword.getText(),txtEmail.getText());
 	  
-	  //email=txtEmail.getText();
-	  //user=new User(name,surname,username,password,email);
-	  //users.addUser(new User(txtName.getText(),txtSurname.getText(),txtUsername.getText(),
-			  //txtPassword.getText(),txtEmail.getText()));	  
+	  /*to regex control;*/
 	  txtName.addFocusListener(this);
 	  txtSurname.addFocusListener(this);
 	  txtUsername.addFocusListener(this);
@@ -102,24 +99,35 @@ public class Register extends JFrame implements ActionListener,FocusListener
 	   JOptionPane.showMessageDialog(null, "Error:Please enter all inputs valid as it shown to register!");
     }
    }
-   private void RegisterUser()
+   private void RegisterUser()//*
    {
-	 boolean isUniqueUser=true;
+	 boolean isUniqueUsername=true;//*
+	 boolean isUniqueEmail=true;//*
 	 deserializedUsers=readUsersFromFile();
 	 String s[];
 	 for (String dsrlzUser : deserializedUsers)
 	 {  
 		s=dsrlzUser.split("-");
-		if(s[2].equals(txtUsername.getText())||s[4].equals(txtEmail.getText()))
+		if(s[2].equals(txtUsername.getText()))//*
 		//cannot be registered with this username or email if one of them(or both)used before!
 		{
-		  isUniqueUser=false;
+		  isUniqueUsername=false;
+		  break;
+		}
+		else if(s[4].equals(txtEmail.getText()))//*
+		{
+		 isUniqueEmail=false;
+		 break;
 		}
 	 }
 	 
-	 if(isUniqueUser==false)
+	 if(isUniqueUsername==false)//*
 	 {
 	  JOptionPane.showMessageDialog(null, "Error:this username has already taken by another user!"); 
+	 }
+	 else if(isUniqueEmail==false)//*
+	 {
+	  JOptionPane.showMessageDialog(null, "Error:this email has already taken by another user!"); 	 
 	 }
 	 else
 	 {
@@ -159,6 +167,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
 				  continue general;
 			   }			   
 				fw.write(users.get(i)+"\n");
+				
 			  }
 			  //oos.close();
 			  fw.close();
@@ -173,6 +182,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
               fw.close();
 			  System.out.println("file writing finished. ");
             }
+            
 		}
 	   
 		/*catch (NotSerializableException e) 
@@ -232,6 +242,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
 			 }
 			}			
 			ois.close();*/
+		   
 		   Scanner sc = new Scanner(new File("registeredUserRecords.txt"));
 		   while(sc.hasNext()) //go until the end of the file: 
 			{
@@ -243,6 +254,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
 	   catch (FileNotFoundException e) {
 			System.err.println("no such file. ");
 		}
+	   
 		/*catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -250,8 +262,9 @@ public class Register extends JFrame implements ActionListener,FocusListener
 		}   */  
    }
    
+   
   @Override
-  public void focusGained(FocusEvent e)
+  public void focusGained(FocusEvent e) /*to regex control;*/
   {
      if(e.getSource()==txtName)
     	lblName.setText("");
@@ -266,7 +279,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
   }
   
   @Override
-  public void focusLost(FocusEvent e) 
+  public void focusLost(FocusEvent e) /*to regex control;*/
   {
 	//'+' means at least one character must be entered.
     if(e.getSource()==txtName)//e.g,onur(with lowercase) and cannot be passed with space or empty.
@@ -281,7 +294,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
      setItems(txtEmail,"[a-z]{1,}[\\w]+[@][\\w]+[.][a-z]{3}",lblEmail);
   }
   
-  public void setItems(JTextField txt, String regex, JLabel lbl)
+  public void setItems(JTextField txt, String regex, JLabel lbl) /*to regex control;*/
   {
 	 if(txt.getText().matches(regex))
 	 {

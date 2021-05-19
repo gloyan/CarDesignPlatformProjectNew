@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,34 +17,41 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class LoginPage extends JFrame implements ActionListener,FocusListener
-{
-	
+{	
   //ArrayList<User>registeredUsers=new ArrayList<User>();
-   ArrayList<String>registeredUsers=new ArrayList<String>();
-  JButton btnRegister=new JButton("Register");//if the user want to register first!
-  JButton btnLogin=new JButton("Login");
-  JTextField txtUsername=new JTextField();
-  JTextField txtPassword=new JTextField();
-  JLabel lblUsername=new JLabel();
-  JLabel lblPassword=new JLabel();
+	
+   ArrayList<String>registeredUsers=new ArrayList<String>(); 
+   
+   JLabel lblUsr=new JLabel("Username (Use Just Words,Not Symbols):");
+   JLabel lblPsw=new JLabel("Password: (Use Just Words,Not Symbols):");
+   JButton btnRegister=new JButton("Register");//if the user wants to register first(has not account yet)!
+   JButton btnLogin=new JButton("Login");
+   JTextField txtUsername=new JTextField();
+   JTextField txtPassword=new JTextField();
+   JLabel lblUsername=new JLabel();
+   JLabel lblPassword=new JLabel();
 
   public LoginPage() 
   {
 	 super("Login");
-	 setDefaultCloseOperation(HIDE_ON_CLOSE);
+	 setDefaultCloseOperation(HIDE_ON_CLOSE);//EXIT_ON_CLOSE
 	 setLocationRelativeTo(null);//open the screen at the middle of the page;
 	 setSize(800,450);
 	 setLayout(new BorderLayout());
+	 btnRegister.setFont(new Font("Calibri",Font.PLAIN,25));
+	 btnLogin.setFont(new Font("Calibri",Font.PLAIN,25));
 	 btnRegister.setBackground(Color.BLUE);
 	 btnRegister.setForeground(Color.white);
      btnLogin.setBackground(Color.darkGray);
      btnLogin.setForeground(Color.white);
      
 	 JPanel pnlCenter=new JPanel(new GridLayout(3,3));
-	 pnlCenter.add(new JLabel("Username (Use Just Words,Not Symbols):"));
+	 lblUsr.setFont(new Font("Calibri",Font.BOLD,15));
+	 lblPsw.setFont(new Font("Calibri",Font.BOLD,15));
+	 pnlCenter.add(lblUsr);
 	 pnlCenter.add(txtUsername);
 	 pnlCenter.add(lblUsername);
-	 pnlCenter.add(new JLabel("Password: (Use Just Words,Not Symbols):"));
+	 pnlCenter.add(lblPsw);
 	 pnlCenter.add(txtPassword);
 	 pnlCenter.add(lblPassword);
 	 pnlCenter.add(btnRegister);
@@ -101,7 +110,7 @@ public class LoginPage extends JFrame implements ActionListener,FocusListener
  }
     
   @Override
-  public void focusGained(FocusEvent e)
+  public void focusGained(FocusEvent e)/*to regex control;*/
   {
 	if(e.getSource()==txtUsername)
 	   lblUsername.setText("");
@@ -110,7 +119,7 @@ public class LoginPage extends JFrame implements ActionListener,FocusListener
   }
 
   @Override
-  public void focusLost(FocusEvent e)
+  public void focusLost(FocusEvent e)/*to regex control;*/
   {
 	if(e.getSource()==txtUsername)//can be letter,number,_ and .(some characters) and cannot be passed with space or empty.
 	   setItems(txtUsername,"[\\w]+[\\S]",lblUsername);//[a-zA-Z0-9_]+
@@ -119,7 +128,7 @@ public class LoginPage extends JFrame implements ActionListener,FocusListener
 	
   } 
   
-  public void setItems(JTextField txt, String regex, JLabel lbl)
+  public void setItems(JTextField txt, String regex, JLabel lbl)/*to regex control;*/
   {
 	 if(txt.getText().matches(regex))
 	 {
