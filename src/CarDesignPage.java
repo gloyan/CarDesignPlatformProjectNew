@@ -10,7 +10,7 @@ public class CarDesignPage extends JFrame implements ActionListener {
     private JButton lastColorButtonPressed;
     private JButton lastRimButtonPressed;
 
-    ImageIcon carIcon = new ImageIcon("src/SEN2212_Images (3)/SEN2212_Images/" + selectedBrand + "/" + selectedModel + "/" + selectedBrand + selectedModel + "BlackRim1.jpg");
+    ImageIcon carIcon1 = new ImageIcon("src/SEN2212_Images (3)/SEN2212_Images/" + selectedBrand + "/" + selectedModel + "/" + selectedBrand + selectedModel + "BlackRim1.jpg");
     ImageIcon carIcon2 = new ImageIcon("src/SEN2212_Images (3)/SEN2212_Images/" + selectedBrand + "/" + selectedModel + "/" + selectedBrand + selectedModel + "BlackRim2.jpg");
     ImageIcon carIcon3 = new ImageIcon("src/SEN2212_Images (3)/SEN2212_Images/" + selectedBrand + "/" + selectedModel + "/" + selectedBrand + selectedModel + "BlueRim1.jpg");
     ImageIcon carIcon4 = new ImageIcon("src/SEN2212_Images (3)/SEN2212_Images/" + selectedBrand + "/" + selectedModel + "/" + selectedBrand + selectedModel + "BlueRim2.jpg");
@@ -22,7 +22,7 @@ public class CarDesignPage extends JFrame implements ActionListener {
     JPanel pnlNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
     JPanel pnlWest = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-    JLabel carImage = new JLabel(carIcon);
+    JLabel carImage = new JLabel(carIcon1);
     JLabel carImage2 = new JLabel(carIcon2);
     JLabel carImage3 = new JLabel(carIcon3);
     JLabel carImage4 = new JLabel(carIcon4);
@@ -39,14 +39,13 @@ public class CarDesignPage extends JFrame implements ActionListener {
 
 
     public CarDesignPage() {
+
         super("Car Design Page");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         setSize(1500, 750);
         setLayout(new BorderLayout());
-        //setResizable(false);
-        //getContentPane().setBackground(Color.yellow);
-        //setLocation(getWidth() / 2, getHeight() / 2);
         setLocationRelativeTo(null);
+
         carImage.setPreferredSize(new Dimension(1400, 700));
         carImage2.setPreferredSize(new Dimension(1400, 700));
         carImage3.setPreferredSize(new Dimension(1400, 700));
@@ -94,10 +93,6 @@ public class CarDesignPage extends JFrame implements ActionListener {
         rimButtonType1.addActionListener(this);
         rimButtonType2.addActionListener(this);
 
-    }
-
-    public static void main(String[] args) {
-        new CarSelectionPage().setVisible(true);
     }
 
     @Override
@@ -171,7 +166,7 @@ public class CarDesignPage extends JFrame implements ActionListener {
         if (getSize().getWidth() >= 1509 && getSize().getHeight() >= 756)
             setSize(1500, 750);
         else
-            setSize((getWidth() * 100) / 99, (getHeight() * 100) / 99);
+            setSize((getWidth() * 500) / 499, (getHeight() * 500) / 499);
         add(pnlSouth, BorderLayout.SOUTH);
     }
 }
