@@ -291,7 +291,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
     else if(e.getSource()==txtPassword)//[a-zA-Z0-9_]+ ==>same rules with txtUsername is applied here.
       setItems(txtPassword,"[\\w]+[\\S]",lblPassword);
     else if(e.getSource()==txtEmail)//@gmail.com
-     setItems(txtEmail,"[a-z]{1,}[\\w]+[@][\\w]+[.][a-z]{3}",lblEmail);
+     setItems(txtEmail,"[a-z]{1,}(.)?[\\w]+[@][\\w]+[.][a-z]{3}",lblEmail);//'.' is optional(with the usage of ?).
   }
   
   public void setItems(JTextField txt, String regex, JLabel lbl) /*to regex control;*/
@@ -301,7 +301,7 @@ public class Register extends JFrame implements ActionListener,FocusListener
 	   lbl.setText("Acceptable!");
 	   lbl.setForeground(Color.green);
 	 }
-	else
+	else 
 	{
 	 lbl.setText("Wrong Format!");
 	 lbl.setForeground(Color.red);
