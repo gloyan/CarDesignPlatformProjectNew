@@ -55,6 +55,8 @@ public class MainPage extends JFrame implements ActionListener
 	and communicate with him/her via his/her registered email to tell them he/she is the winner and will
 	 get this(IPhone etc.) prize.*/
 	
+	JLabel lblPointOfUser;
+	
 	JPanel pnlCenter=new JPanel(new GridLayout(3,1));
 	static String loginedUsername;//get the Logined user's username to increase his/her point accordingly.
 	static String lastTriggeredDate;
@@ -76,13 +78,16 @@ public class MainPage extends JFrame implements ActionListener
 	btnRaisePoint.setBackground(Color.darkGray);
 	btnRaisePoint.setForeground(Color.white);	
 	
-	JPanel pnlNorth=new JPanel(new GridLayout(1,1));
-	lblInfo.setSize(300,600);
+	JPanel pnlNorth=new JPanel(new GridLayout(1,2));
+	lblInfo.setSize(450,600);
 	lblInfo.setForeground(Color.RED);
 	lblInfo.setFont(new Font("Serif",Font.BOLD,16));
+	lblPointOfUser=new JLabel(getRecentPointOfLoginedUser());//recent point of logined user will be showed!
+	lblPointOfUser.setFont(new Font("Serif",Font.BOLD,16));
+	lblPointOfUser.setForeground(Color.DARK_GRAY);
 	pnlNorth.add(lblInfo);
-	pnlNorth.add(new JLabel());
-	
+	pnlNorth.add(lblPointOfUser);
+	//pnlNorth.add(new JLabel());	
 	//JPanel pnlCenter=new JPanel(new GridLayout(3,1));//defined at global.	
 	pnlCenter.add(btnDesign);
 	pnlCenter.add(btnRaisePoint);	 
@@ -124,7 +129,10 @@ public class MainPage extends JFrame implements ActionListener
 	  
 	  //logined user is also defined in the point calculation file and he/she can move on to Car Selection Page!
 	  else//*
+	  {
 	    new CarSelectionPage().setVisible(true);
+	    JOptionPane.showMessageDialog(null,"First select car brand from combobox then click to Select Brand button");
+	  }   
 	 }
 	
 
@@ -219,6 +227,32 @@ public class MainPage extends JFrame implements ActionListener
        WriteLoginedUsersToFile();
     }
   }	 
+ }
+ 
+ 
+ public static String getRecentPointOfLoginedUser()//*
+ {
+   //if loginedusername is not null,his/her recent point will be showed. 
+   readUsersFromFile();//tempUsers is filled
+   String s[];
+   String point="";
+   if(loginedUsername!=null)
+  { for(String logUser:tempUsers)
+    {
+	  s=logUser.split("-");
+	  if(s[2].equals(loginedUsername))
+	  {
+	    point=s[5];
+	    break;
+	  }
+	  else
+	    continue;
+    }
+    return "||Your recent point is:"+point;
+  }
+   else
+	 return "||You need to login first to see your recent point here!";
+   
  }
  
 
@@ -398,4 +432,4 @@ public class MainPage extends JFrame implements ActionListener
 	 new MainPage().setVisible(true);
   }
    
-}
+} 
