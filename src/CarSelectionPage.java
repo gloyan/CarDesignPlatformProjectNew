@@ -20,7 +20,7 @@ public class CarSelectionPage extends JFrame {
         setLayout(new GridLayout(1, 3));
         setLocationRelativeTo(null);
         setBackground(Color.BLUE);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);//EXIT_ON_CLOSE
 
         root.key = "Car";
         (root.child).add(GeneralTreeNode.newNode("BMW"));
